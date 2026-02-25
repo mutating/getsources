@@ -63,6 +63,7 @@ class SomeClass:
         ...
 
 print(getclearsource(SomeClass.method))
+#> @staticmethod
 #> def method():
 #>     ...
 ```
