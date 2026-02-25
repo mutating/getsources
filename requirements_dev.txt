@@ -8,5 +8,4 @@ pytest-mypy-testing==0.1.3
 full_match==0.0.3
 transfunctions==0.0.9
 pexpect==4.9.0; sys_platform == "linux" or sys_platform == "darwin"
-wexpect==4.0.0; sys_platform == "win32"
 setuptools==75.3.4

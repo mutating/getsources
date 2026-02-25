@@ -3,13 +3,9 @@ import code
 from os import environ
 from contextlib import redirect_stdout
 from io import StringIO
-from sys import version_info
+from sys import version_info, platform
 
 import pytest
-try:
-    from pexpect import spawn
-except ImportError:
-    from wexpect import spawn
 
 from getsources import getsource
 
@@ -74,8 +70,10 @@ def test_usual_staticmethods():
     assert getsource(B().method).splitlines() == ['        @staticmethod', '        def method(a, b):', '            pass']
 
 
-#@pytest.mark.skipif(version_info >= (3, 9), reason='I wait this: https://github.com/uqfoundation/dill/issues/745')
+@pytest.mark.skipif(platform == "win32", reason='I wait this: https://github.com/raczben/wexpect/issues/55')
 def test_usual_functions_in_REPL():
+    from pexpect import spawn
+
     env = environ.copy()
     env["PYTHON_COLORS"] = "0"
     child = spawn('python3', ["-i"], encoding="utf-8", env=env, timeout=5)
@@ -99,8 +97,8 @@ def test_usual_functions_in_REPL():
     after = buffer.getvalue()
     print(after)
     print('-------------')
-    #after = re.compile(r'(?:\x1B[@-_]|\x9B)[0-?]*[ -/]*[@-~]').sub('', after.lstrip(before))
-    #after = ''.join(ch for ch in after if ch >= ' ' or ch in '\n\r\t')
+    after = re.compile(r'(?:\x1B[@-_]|\x9B)[0-?]*[ -/]*[@-~]').sub('', after.lstrip(before))
+    after = ''.join(ch for ch in after if ch >= ' ' or ch in '\n\r\t')
     after = after.splitlines()
 
     child.sendline("exit()")
