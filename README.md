@@ -51,3 +51,20 @@ Unlike its counterpart from the standard library, this thing can also work:
 
 - With lambda functions
 - With functions defined inside REPL
+
+We also often need to trim excess indentation from a function object to make it easier to further process the resulting code. To do this, use the `getclearsource` function:
+
+```python
+from getsources import getclearsource
+
+class SomeClass:
+    @staticmethod
+    def method():
+        ...
+
+print(getclearsource(SomeClass.method))
+#> def method():
+#>     ...
+```
+
+As you can see, the resulting source code text has no extra indentation, but in all other respects this function is completely identical to the usual `getsource`.
