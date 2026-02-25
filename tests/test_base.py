@@ -1,3 +1,10 @@
+import code
+from sys import version_info
+from contextlib import redirect_stdout
+from io import StringIO
+
+import pytest
+
 from getsources import getsource
 
 
@@ -59,3 +66,36 @@ def test_usual_staticmethods():
 
     assert getsource(A().method).splitlines() == ['        @staticmethod', '        def method():', '            pass']
     assert getsource(B().method).splitlines() == ['        @staticmethod', '        def method(a, b):', '            pass']
+
+
+@pytest.mark.skipif(version_info >= (3, 14), reason='I wait this: https://github.com/uqfoundation/dill/issues/745')
+def test_usual_functions_in_REPL():
+    console = code.InteractiveConsole({})
+    buffer = StringIO()
+
+    console.push("from getsources import getsource")
+    console.push("def function(): pass")
+    console.push("")
+
+    with redirect_stdout(buffer):
+        console.push("print(getsource(function), end='')")
+
+    assert buffer.getvalue() == 'def function(): pass'
+
+
+@pytest.mark.skipif(version_info >= (3, 14), reason='I wait this: https://github.com/uqfoundation/dill/issues/745')
+def test_lambda_in_REPL():
+    function = lambda x: x
+
+    assert getsource(function).strip() == 'function = lambda x: x'
+
+    console = code.InteractiveConsole({})
+    buffer = StringIO()
+
+    console.push("from getsources import getsource")
+    console.push('function = lambda x: x')
+
+    with redirect_stdout(buffer):
+        console.push("print(getsource(function), end='')")
+
+    assert buffer.getvalue() == 'function = lambda x: x'
