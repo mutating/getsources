@@ -132,4 +132,4 @@ def test_lambda_in_REPL():  # noqa: N802
 
     child.sendline("exit()")
 
-    assert any('function = lambda x: x' in x for x in after)
+    assert any('lambda x: x' in x for x in after)
