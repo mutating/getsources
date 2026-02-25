@@ -1,9 +1,7 @@
 import re
-import code
-from os import environ
-from contextlib import redirect_stdout
 from io import StringIO
-from sys import version_info, platform
+from os import environ
+from sys import platform
 
 import pytest
 
@@ -71,8 +69,8 @@ def test_usual_staticmethods():
 
 
 @pytest.mark.skipif(platform == "win32", reason='I wait this: https://github.com/raczben/wexpect/issues/55')
-def test_usual_functions_in_REPL():
-    from pexpect import spawn
+def test_usual_functions_in_REPL():  # noqa: N802
+    from pexpect import spawn  # type: ignore[import-untyped] # noqa: PLC0415
 
     env = environ.copy()
     env["PYTHON_COLORS"] = "0"
