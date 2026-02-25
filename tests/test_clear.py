@@ -165,9 +165,10 @@ def test_lambda_in_REPL():  # noqa: N802
     child.sendline("print(getclearsource(function), end='')")
     child.expect(">>> ")
 
-    after = buffer.getvalue().lstrip(before)
+    after = buffer.getvalue()
+    after = after[len(before):]
     after = after.splitlines()
 
     child.sendline("exit()")
 
-    assert any('lambda x: x' in x for x in after)
+    assert any('function = lambda x: x' in x for x in after)

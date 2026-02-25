@@ -124,22 +124,12 @@ def test_lambda_in_REPL():  # noqa: N802
 
     before = buffer.getvalue()
 
-    print(before)  # noqa: T201
-    print('------------')  # noqa: T201
-
     child.sendline("print(getsource(function), end='')")
     child.expect(">>> ")
 
     after = buffer.getvalue()
-    print(after)  # noqa: T201
-    print('------------')  # noqa: T201
-    #after = re.compile(r'(?:\x1B[@-_]|\x9B)[0-?]*[ -/]*[@-~]').sub('', after.lstrip(before))
-    #after = ''.join(ch for ch in after if ch >= ' ' or ch in '\n\r\t')
     after = after[len(before):]
-    print(after)  # noqa: T201
-    print('------------')  # noqa: T201
     after = after.splitlines()
-    print(after)  # noqa: T201
 
     child.sendline("exit()")
 
