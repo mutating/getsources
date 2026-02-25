@@ -102,6 +102,8 @@ def test_usual_functions_in_REPL():
 
     child.sendline("exit()")
 
+    print(after)
+
     assert any('def function(): ...' in x for x in after)
 
 
