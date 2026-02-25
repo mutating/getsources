@@ -166,7 +166,7 @@ def test_lambda_in_REPL():  # noqa: N802
     child.expect(">>> ")
 
     after = buffer.getvalue()
-    print(after)
+    print(after)  # noqa: T201
     after = re.compile(r'(?:\x1B[@-_]|\x9B)[0-?]*[ -/]*[@-~]').sub('', after.lstrip(before))
     after = ''.join(ch for ch in after if ch >= ' ' or ch in '\n\r\t')
     after = after.splitlines()
