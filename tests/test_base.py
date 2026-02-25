@@ -96,7 +96,10 @@ def test_usual_functions_in_REPL():
     child.sendline("print(getsource(function), end='')")
     child.expect(">>> ")
 
-    after = re.compile(r'(?:\x1B[@-_]|\x9B)[0-?]*[ -/]*[@-~]').sub('', buffer.getvalue().lstrip(before))
+    after = buffer.getvalue()
+    print(after)
+    print('-------------')
+    after = re.compile(r'(?:\x1B[@-_]|\x9B)[0-?]*[ -/]*[@-~]').sub('', after.lstrip(before))
     after = ''.join(ch for ch in after if ch >= ' ' or ch in '\n\r\t')
     after = after.splitlines()
 
