@@ -83,7 +83,7 @@ def test_usual_functions_in_REPL():
     buffer = StringIO()
     child.logfile = buffer
 
-    child.setecho(False)
+    #child.setecho(False)
     child.expect(">>> ")
     child.sendline('from getsources import getsource')
     child.expect(">>> ")
