@@ -99,23 +99,3 @@ def test_usual_functions_in_REPL():  # noqa: N802
     child.sendline("exit()")
 
     assert any('def function(): ...' in x for x in after)
-
-
-"""
-@pytest.mark.skipif(version_info >= (3, 9), reason='I wait this: https://github.com/uqfoundation/dill/issues/745')
-def test_lambda_in_REPL():  # noqa: N802
-    function = lambda x: x
-
-    assert getsource(function).strip() == 'function = lambda x: x'
-
-    console = code.InteractiveConsole({})
-    buffer = StringIO()
-
-    console.push("from getsources import getsource")
-    console.push('function = lambda x: x')
-
-    with redirect_stdout(buffer):
-        console.push("print(getsource(function), end='')")
-
-    assert buffer.getvalue() == 'function = lambda x: x'
-"""
