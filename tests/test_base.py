@@ -1,9 +1,12 @@
+import re
 import code
+from os import environ
 from contextlib import redirect_stdout
 from io import StringIO
 from sys import version_info
 
 import pytest
+from pexpect import spawn
 
 from getsources import getsource
 
@@ -68,19 +71,36 @@ def test_usual_staticmethods():
     assert getsource(B().method).splitlines() == ['        @staticmethod', '        def method(a, b):', '            pass']
 
 
-@pytest.mark.skipif(version_info >= (3, 9), reason='I wait this: https://github.com/uqfoundation/dill/issues/745')
-def test_usual_functions_in_REPL():  # noqa: N802
-    console = code.InteractiveConsole({})
+#@pytest.mark.skipif(version_info >= (3, 9), reason='I wait this: https://github.com/uqfoundation/dill/issues/745')
+def test_usual_functions_in_REPL():
+    env = environ.copy()
+    env["PYTHON_COLORS"] = "0"
+    child = spawn('python3', ["-i"], encoding="utf-8", env=env, timeout=5)
+
     buffer = StringIO()
+    child.logfile = buffer
 
-    console.push("from getsources import getsource")
-    console.push("def function(): pass")
-    console.push("")
+    child.setecho(False)
+    child.expect(">>> ")
+    child.sendline('from getsources import getsource')
+    child.expect(">>> ")
+    child.sendline('def function(): ...')
+    child.sendline('')
+    child.expect(">>> ")
 
-    with redirect_stdout(buffer):
-        console.push("print(getsource(function), end='')")
+    before = buffer.getvalue()
 
-    assert buffer.getvalue() == 'def function(): pass'
+    child.sendline("print(getsource(function), end='')")
+    child.expect(">>> ")
+
+    after = re.compile(r'(?:\x1B[@-_]|\x9B)[0-?]*[ -/]*[@-~]').sub('', buffer.getvalue().lstrip(before))
+    after = ''.join(ch for ch in after if ch >= ' ' or ch in '\n\r\t')
+    after = after.splitlines()
+
+    child.sendline("exit()")
+
+    assert any('def function(): ...' in x for x in after)
+
 
 
 @pytest.mark.skipif(version_info >= (3, 9), reason='I wait this: https://github.com/uqfoundation/dill/issues/745')
