@@ -1,7 +1,7 @@
 import code
-from sys import version_info
 from contextlib import redirect_stdout
 from io import StringIO
+from sys import version_info
 
 import pytest
 
@@ -69,7 +69,7 @@ def test_usual_staticmethods():
 
 
 @pytest.mark.skipif(version_info >= (3, 14), reason='I wait this: https://github.com/uqfoundation/dill/issues/745')
-def test_usual_functions_in_REPL():
+def test_usual_functions_in_REPL():  # noqa: N802
     console = code.InteractiveConsole({})
     buffer = StringIO()
 
@@ -84,7 +84,7 @@ def test_usual_functions_in_REPL():
 
 
 @pytest.mark.skipif(version_info >= (3, 14), reason='I wait this: https://github.com/uqfoundation/dill/issues/745')
-def test_lambda_in_REPL():
+def test_lambda_in_REPL():  # noqa: N802
     function = lambda x: x
 
     assert getsource(function).strip() == 'function = lambda x: x'
