@@ -9,7 +9,7 @@ def getclearsource(function: Callable[..., Any]) -> str:
     splitted_source_code = source_code.split('\n')
 
     indent = 0
-    for letter in splitted_source_code[0]:
+    for letter in splitted_source_code[0]:  # pragma: no branch
         if letter.isspace():
             indent += 1
         else:
