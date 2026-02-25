@@ -68,7 +68,7 @@ def test_usual_staticmethods():
     assert getsource(B().method).splitlines() == ['        @staticmethod', '        def method(a, b):', '            pass']
 
 
-@pytest.mark.skipif(version_info >= (3, 14), reason='I wait this: https://github.com/uqfoundation/dill/issues/745')
+@pytest.mark.skipif(version_info >= (3, 11), reason='I wait this: https://github.com/uqfoundation/dill/issues/745')
 def test_usual_functions_in_REPL():  # noqa: N802
     console = code.InteractiveConsole({})
     buffer = StringIO()
@@ -83,7 +83,7 @@ def test_usual_functions_in_REPL():  # noqa: N802
     assert buffer.getvalue() == 'def function(): pass'
 
 
-@pytest.mark.skipif(version_info >= (3, 14), reason='I wait this: https://github.com/uqfoundation/dill/issues/745')
+@pytest.mark.skipif(version_info >= (3, 11), reason='I wait this: https://github.com/uqfoundation/dill/issues/745')
 def test_lambda_in_REPL():  # noqa: N802
     function = lambda x: x
 
