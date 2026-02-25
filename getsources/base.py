@@ -7,5 +7,5 @@ from dill.source import getsource as dill_getsource  # type: ignore[import-untyp
 def getsource(function: Callable[..., Any]) -> str:
     try:
         return original_getsource(function)
-    except OSError:
+    except OSError:  # pragma: no cover
         return dill_getsource(function)  # type: ignore[no-any-return]
