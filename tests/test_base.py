@@ -51,6 +51,8 @@ def test_usual_classmethods():
 
     assert getsource(A().method).splitlines() == ['        @classmethod', '        def method(cls):', '            pass']
     assert getsource(B().method).splitlines() == ['        @classmethod', '        def method(cls, a, b):', '            pass']
+    assert getsource(A.method).splitlines() == ['        @classmethod', '        def method(cls):', '            pass']
+    assert getsource(B.method).splitlines() == ['        @classmethod', '        def method(cls, a, b):', '            pass']
 
 
 def test_usual_staticmethods():
@@ -66,6 +68,8 @@ def test_usual_staticmethods():
 
     assert getsource(A().method).splitlines() == ['        @staticmethod', '        def method():', '            pass']
     assert getsource(B().method).splitlines() == ['        @staticmethod', '        def method(a, b):', '            pass']
+    assert getsource(A.method).splitlines() == ['        @staticmethod', '        def method():', '            pass']
+    assert getsource(B.method).splitlines() == ['        @staticmethod', '        def method(a, b):', '            pass']
 
 
 @pytest.mark.skipif(platform == "win32", reason='I wait this: https://github.com/raczben/wexpect/issues/55')
