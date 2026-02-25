@@ -81,7 +81,6 @@ def test_usual_functions_in_REPL():
     buffer = StringIO()
     child.logfile = buffer
 
-    #child.setecho(False)
     child.expect(">>> ")
     child.sendline('from getsources import getsource')
     child.expect(">>> ")
@@ -95,15 +94,11 @@ def test_usual_functions_in_REPL():
     child.expect(">>> ")
 
     after = buffer.getvalue()
-    print(after)
-    print('-------------')
     after = re.compile(r'(?:\x1B[@-_]|\x9B)[0-?]*[ -/]*[@-~]').sub('', after.lstrip(before))
     after = ''.join(ch for ch in after if ch >= ' ' or ch in '\n\r\t')
     after = after.splitlines()
 
     child.sendline("exit()")
-
-    print(after)
 
     assert any('def function(): ...' in x for x in after)
 
