@@ -1,1 +1,1 @@
-from getsources.function import getsource
+from getsources.base import getsource
