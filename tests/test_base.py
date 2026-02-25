@@ -130,7 +130,10 @@ def test_lambda_in_REPL():  # noqa: N802
     child.sendline("print(getsource(function), end='')")
     child.expect(">>> ")
 
-    after = buffer.getvalue().lstrip(before)
+    after = buffer.getvalue()
+    print(after)  # noqa: T201
+    print('------------')  # noqa: T201
+    after = after.lstrip(before)
     print(after)  # noqa: T201
     print('------------')  # noqa: T201
     after = after.splitlines()
