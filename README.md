@@ -19,3 +19,35 @@
 
 
 This library is needed to obtain the source code of functions at runtime. It can be used, for example, as a basis for libraries that work with [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) on the fly. In fact, it is a thin layer built around [`inspect.getsource`](https://docs.python.org/3/library/inspect.html#inspect.getsource) and [`dill.source.getsource`](https://dill.readthedocs.io/en/latest/dill.html#dill.source.getsource).
+
+
+## Installation
+
+You can install [`getsources`](https://pypi.python.org/pypi/getsources) using pip:
+
+```bash
+pip install getsources
+```
+
+You can also quickly try out this and other packages without having to install using [instld](https://github.com/pomponchik/instld).
+
+
+## Usage
+
+The basic function of the library is `getsource`, which works similarly to the function of the same name from the standard library:
+
+```python
+from getsources import getsource
+
+def function():
+    ...
+
+print(getsource(function))
+#> def function():
+#>     ...
+```
+
+Unlike its counterpart from the standard library, this thing can also work:
+
+- With lambda functions
+- With functions defined inside REPL
