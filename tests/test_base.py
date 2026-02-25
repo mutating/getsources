@@ -6,7 +6,10 @@ from io import StringIO
 from sys import version_info
 
 import pytest
-from pexpect import spawn
+try:
+    from pexpect import spawn
+except ImportError:
+    from wexpect import spawn
 
 from getsources import getsource
 
