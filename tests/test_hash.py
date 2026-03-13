@@ -178,3 +178,13 @@ def test_try_to_skip_doctstring_if_only_body_option_isnt_sen(transformed):
 
     with pytest.raises(ValueError, match=match('You can omit the docstring only if the `only_body=True` option is set.')):
         getsourcehash(function, only_body=False, skip_docstring=True)
+
+
+def test_hash_simple_lambda():
+    lambda_hash = getsourcehash(lambda x: x)
+    assert lambda_hash == '14FXP9'
+
+
+def test_hash_lambda_only_body():
+    lambda_hash = getsourcehash(lambda x: x, only_body=True)
+    assert lambda_hash == '91MJ41'

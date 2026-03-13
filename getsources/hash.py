@@ -1,21 +1,34 @@
 import hashlib
 from typing import Any, Callable
-from ast import parse, Expr, Constant, get_source_segment
+from ast import parse, Expr, Constant, Lambda, get_source_segment, walk
+from types import FunctionType
 
 from getsources import getclearsource
 
 ALPHABET = '0123456789ABCDEFGHJKMNPQRSTVWXYZ'
 
 
-def get_body_text(source: str, skip_docstring: bool) -> str:
+def is_lambda(function: Callable[..., Any]):
+    return isinstance(function, FunctionType) and function.__name__ == "<lambda>"
+
+
+def get_body_text(function: Callable[..., Any], source: str, skip_docstring: bool) -> str:
     tree = parse(source)
 
-    function_node = tree.body[0]
-    body_nodes = function_node.body
-    first = body_nodes[0]
+    if is_lambda(function):
+        body_nodes = []
 
-    if skip_docstring and body_nodes and (isinstance(first, Expr) and isinstance(first.value, Constant) and isinstance(first.value.value, str)):
-        body_nodes = body_nodes[1:]
+        for node in walk(tree):
+            if isinstance(node, Lambda):
+                body_nodes.append(node.body)
+
+    else:
+        function_node = tree.body[0]
+        body_nodes = function_node.body
+        first = body_nodes[0]
+
+        if skip_docstring and body_nodes and (isinstance(first, Expr) and isinstance(first.value, Constant) and isinstance(first.value.value, str)):
+            body_nodes = body_nodes[1:]
 
     return '\n'.join([get_source_segment(source, statement) for statement in body_nodes])
 
@@ -30,7 +43,7 @@ def getsourcehash(function: Callable[..., Any], size: int = 6, only_body: bool =
     if not only_body:
         interesting_part = source_code
     else:
-        interesting_part = get_body_text(source_code, skip_docstring=skip_docstring)
+        interesting_part = get_body_text(function, source_code, skip_docstring=skip_docstring)
 
     digest = hashlib.sha256(interesting_part.encode('utf-8')).digest()
     number = int.from_bytes(digest, 'big')
