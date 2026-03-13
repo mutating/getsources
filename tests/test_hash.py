@@ -1,7 +1,10 @@
+import ast
+
 import pytest
 from full_match import match
 
-from getsources import getsourcehash
+from getsources import getclearsource, getsourcehash
+from getsources.errors import UncertaintyWithLambdasError
 
 
 def test_hash_lenth(transformed):
@@ -191,3 +194,15 @@ def test_hash_lambda_only_body():
 
     assert first_hash == '91MJ41'
     assert first_hash == second_hash
+
+
+def test_try_to_get_hash_of_changed_lambda():
+    function = lambda x, y: x  # noqa: ARG005
+
+    tree = ast.parse(getclearsource(function), mode='eval')
+    tree.body.body = ast.Name(id="y", ctx=ast.Load(), lineno=1, col_offset=1)
+    code = compile(tree, filename="<ast>", mode="eval")
+    new_function = eval(code)
+
+    with pytest.raises(UncertaintyWithLambdasError, match=match('It seems that the AST for the lambda function has been modified; can\'t extract the source code.')):
+        getsourcehash(new_function)
