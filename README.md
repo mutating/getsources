@@ -42,9 +42,12 @@ You can also quickly try this package and others without installing them via [in
 
 ## Get dirty sources
 
-The basic function of the library is `getsource`, which works similarly to the function of the same name from the standard library:
+The standard library includes the [`getsource`](https://docs.python.org/3/library/inspect.html#inspect.getsource) function that returns the source code of functions and other objects. However, this does not work with functions defined in the [`REPL`](https://docs.python.org/3/tutorial/interpreter.html#interactive-mode).
+
+This library defines a function of the same name that does the same thing but does not have this drawback:
 
 ```python
+# You can run this code snippet in the REPL.
 from getsources import getsource
 
 def function():
@@ -55,15 +58,35 @@ print(getsource(function))
 #>     ...
 ```
 
-Unlike its counterpart from the standard library, this thing can also work:
-
-- With lambda functions
-- With functions defined inside `REPL`
+This way, you can ensure that your functions that work with ASTs can be executed in any way. All other functions in this library are built on top of this one.
 
 
 ## Get clear sources
 
-We also often need to trim excess indentation from a function object to make it easier to further process the resulting code. To do this, use the `getclearsource` function:
+The [`getsource`](#get-dirty-sources) function returns the source code of functions in a "raw" format. This means that the code snippet captures some unnecessary surrounding code.
+
+Here's an example where the standard `getsources` function gets rid extra whitespace characters:
+
+```python
+if True:
+    def function():
+        ...
+
+print(getsource(function))
+#>     def function():
+#>         ...
+```
+
+See? There are extra spaces at the beginning.
+
+Lambda functions also capture the entire surrounding string:
+
+```python
+print(getsource(lambda x: x))
+#> print(getsource(lambda x: x))
+```
+
+To address these issues, there is a special function called `getclearsource`, which returns the original function's code but stripped of any unnecessary elements:
 
 ```python
 from getsources import getclearsource
@@ -77,9 +100,11 @@ print(getclearsource(SomeClass.method))
 #> @staticmethod
 #> def method():
 #>     ...
+print(getclearsource(lambda x: x))
+#> lambda x: x
 ```
 
-As you can see, the resulting source code text has no extra indentation, but in all other respects this function is completely identical to the [usual `getsource`](#get-dirty-sources).
+When working with AST, this function is the recommended and safe way to retrieve the source code of functions.
 
 
 ## Get hashes
@@ -97,6 +122,8 @@ print(getsourcehash(function))
 ```
 
 > ⓘ A hash string contains only characters from the [`Crockford Base32`](https://en.wikipedia.org/wiki/Base32) alphabet, which consists solely of uppercase English letters and digits; letters that resemble digits are excluded from the list, making the hash easy to read.
+
+> ⓘ The `getsourcehash` function operates on top of [`getclearsource`](#get-clear-sources) and ignores "extra" characters in the source code.
 
 By default, the hash string length is 6 characters, but you can set your own values ranging from 4 to 8 characters:
 
