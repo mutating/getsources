@@ -1,3 +1,4 @@
+import ast
 import re
 from io import StringIO
 from os import environ
@@ -181,3 +182,15 @@ def test_get_lambda_where_are_two_lambdas():
 
     with pytest.raises(UncertaintyWithLambdasError, match=match('Several lambda functions are defined in a single line of code, can\'t pick the one.')):
         getclearsource(lambdas[0])
+
+
+def test_try_to_get_changed_lambda():
+    function = lambda x, y: x  # noqa: ARG005
+
+    tree = ast.parse(getclearsource(function), mode='eval')
+    tree.body.body = ast.Name(id="y", ctx=ast.Load(), lineno=1, col_offset=1)
+    code = compile(tree, filename="<ast>", mode="eval")
+    new_function = eval(code)
+
+    with pytest.raises(UncertaintyWithLambdasError, match=match('It seems that the AST for the lambda function has been modified; can\'t extract the source code.')):
+        getclearsource(new_function)
