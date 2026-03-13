@@ -186,5 +186,8 @@ def test_hash_simple_lambda():
 
 
 def test_hash_lambda_only_body():
-    lambda_hash = getsourcehash(lambda x: x, only_body=True)
-    assert lambda_hash == '91MJ41'
+    first_hash = getsourcehash(lambda x: x, only_body=True)
+    second_hash = getsourcehash(lambda x, y: x, only_body=True)
+
+    assert first_hash == '91MJ41'
+    assert first_hash == second_hash
