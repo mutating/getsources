@@ -22,7 +22,7 @@ def getclearsource(function: Callable[..., Any]) -> str:
                 lambda_node = node
                 first = False
 
-        segment_source = get_source_segment(stripped_source_code, lambda_node)
+        segment_source = get_source_segment(stripped_source_code, lambda_node)  # type: ignore[arg-type]
         if segment_source is None:
             raise UncertaintyWithLambdasError('It seems that the AST for the lambda function has been modified; can\'t extract the source code.')
         return segment_source
