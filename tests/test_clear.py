@@ -1,11 +1,14 @@
+import ast
 import re
 from io import StringIO
 from os import environ
 from sys import platform
 
 import pytest
+from full_match import match
 
 from getsources import getclearsource
+from getsources.errors import UncertaintyWithLambdasError
 
 
 def global_function_1():
@@ -49,8 +52,8 @@ def test_usual_functions():
 def test_lambda():
     function = lambda x: x
 
-    assert getclearsource(function) == 'function = lambda x: x'
-    assert getclearsource(global_function_3) == 'global_function_3 = lambda x: x'
+    assert getclearsource(function) == 'lambda x: x'
+    assert getclearsource(global_function_3) == 'lambda x: x'
 
 
 def test_usual_methods():
@@ -171,4 +174,23 @@ def test_lambda_in_REPL():  # noqa: N802
 
     child.sendline("exit()")
 
-    assert any('function = lambda x: x' in x for x in after)
+    assert any('lambda x: x' in x for x in after)
+
+
+def test_get_lambda_where_are_two_lambdas():
+    lambdas = [lambda: None, lambda x: x]
+
+    with pytest.raises(UncertaintyWithLambdasError, match=match('Several lambda functions are defined in a single line of code, can\'t determine which one.')):
+        getclearsource(lambdas[0])
+
+
+def test_try_to_get_changed_lambda():
+    function = lambda x, y: x  # noqa: ARG005
+
+    tree = ast.parse(getclearsource(function), mode='eval')
+    tree.body.body = ast.Name(id="y", ctx=ast.Load(), lineno=1, col_offset=1)
+    code = compile(tree, filename="<ast>", mode="eval")
+    new_function = eval(code)
+
+    with pytest.raises(UncertaintyWithLambdasError, match=match('It seems that the AST for the lambda function has been modified; can\'t extract the source code.')):
+        getclearsource(new_function)
