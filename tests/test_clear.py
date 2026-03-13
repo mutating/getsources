@@ -180,7 +180,7 @@ def test_lambda_in_REPL():  # noqa: N802
 def test_get_lambda_where_are_two_lambdas():
     lambdas = [lambda: None, lambda x: x]
 
-    with pytest.raises(UncertaintyWithLambdasError, match=match('Several lambda functions are defined in a single line of code, can\'t pick the one.')):
+    with pytest.raises(UncertaintyWithLambdasError, match=match('Several lambda functions are defined in a single line of code, can\'t determine which one.')):
         getclearsource(lambdas[0])
 
 

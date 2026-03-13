@@ -61,7 +61,7 @@ This makes AST-based tools work reliably in both scripts and the REPL. All other
 
 ## Get cleaned source
 
-The [`getsource`](#get-raw-source) function a function's source code in raw form. This means that the code snippet captures some unnecessary surrounding code.
+The [`getsource`](#get-raw-source) function returns a function's source code in raw form. This means that the code snippet captures some unnecessary surrounding code.
 
 Here is an example where the standard `getsource` output includes extra leading whitespace:
 
@@ -109,7 +109,7 @@ lambdas = [lambda: None, lambda x: x]
 
 getclearsource(lambdas[0])
 #> ...
-#> getsources.errors.UncertaintyWithLambdasError: Several lambda functions are defined in a single line of code, can't pick the one.
+#> getsources.errors.UncertaintyWithLambdasError: Several lambda functions are defined in a single line of code, can't determine which one.
 ```
 
 If you absolutely must obtain at least some source code for these lambdas, use [`getsource`](#get-raw-source):

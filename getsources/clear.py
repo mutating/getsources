@@ -18,7 +18,7 @@ def getclearsource(function: Callable[..., Any]) -> str:
         for node in walk(tree):
             if isinstance(node, Lambda):
                 if not first:
-                    raise UncertaintyWithLambdasError('Several lambda functions are defined in a single line of code, can\'t pick the one.')
+                    raise UncertaintyWithLambdasError('Several lambda functions are defined in a single line of code, can\'t determine which one.')
                 lambda_node = node
                 first = False
 
