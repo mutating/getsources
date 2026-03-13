@@ -4,8 +4,10 @@ from os import environ
 from sys import platform
 
 import pytest
+from full_match import match
 
 from getsources import getclearsource
+from getsources.errors import UncertaintyWithLambdasError
 
 
 def global_function_1():
@@ -172,3 +174,10 @@ def test_lambda_in_REPL():  # noqa: N802
     child.sendline("exit()")
 
     assert any('lambda x: x' in x for x in after)
+
+
+def test_get_lambda_where_are_two_lambdas():
+    lambdas = [lambda: None, lambda x: x]
+
+    with pytest.raises(UncertaintyWithLambdasError, match=match('Several lambda functions are defined in a single line of code, can\'t pick the one.')):
+        getclearsource(lambdas[0])

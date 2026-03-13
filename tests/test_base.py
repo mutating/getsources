@@ -225,3 +225,10 @@ def test_lambda_in_REPL():  # noqa: N802
     child.sendline("exit()")
 
     assert any('function = lambda x: x' in x for x in after)
+
+
+def test_get_lambda_where_are_two_lambdas():
+    lambdas = [lambda: None, lambda x: x]
+
+    assert getsource(lambdas[0]) == getsource(lambdas[1])
+    assert getsource(lambdas[0]) == '    lambdas = [lambda: None, lambda x: x]\n'
