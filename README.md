@@ -69,3 +69,57 @@ print(getclearsource(SomeClass.method))
 ```
 
 As you can see, the resulting source code text has no extra indentation, but in all other respects this function is completely identical to the usual `getsource`.
+
+In some cases, you may not care what exactly is inside a function, but you need to distinguish between functions with different contents. In this case, the `getsourcehash` function is useful, as it returns a short string representation of the function’s source code hash:
+
+```python
+from getsources import getsourcehash
+
+def function():
+    ...
+
+print(getsourcehash(function))
+#> 7SWJGZ
+```
+
+> ⓘ A hash string contains only characters from the [`Crockford Base32`](https://en.wikipedia.org/wiki/Base32) alphabet, which consists solely of uppercase English letters and digits; letters that resemble digits are excluded from the list, making the hash easy to read.
+
+By default, the hash string length is 6 characters, but you can set your own values ranging from 4 to 8 characters:
+
+```python
+print(getsourcehash(function, size=4))
+#> WJGZ
+print(getsourcehash(function, size=8))
+#> XG7SWJGZ
+```
+
+By default, the full text representation of a function is used, including its name and arguments. However, in some cases, we need to compare only the contents of the functions while ignoring these details; in such cases, we need to pass the argument `only_body=True`:
+
+```python
+def function_1():
+    ...
+
+def function_2(a=5):
+    ...
+
+print(getsourcehash(function_1, only_body=True))
+#> V587A6
+print(getsourcehash(function_2, only_body=True))
+#> V587A6
+```
+
+By default, docstrings are considered part of the function body. If you want to skip them as well, pass `skip_docstring=True`:
+
+```python
+def function_1():
+    """some text"""
+    ...
+
+def function_2(a=5):
+    ...
+
+print(getsourcehash(function_1, only_body=True, skip_docstring=True))
+#> V587A6
+print(getsourcehash(function_2, only_body=True, skip_docstring=True))
+#> V587A6
+```
