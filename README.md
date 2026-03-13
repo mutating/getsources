@@ -17,34 +17,32 @@
 
 ![logo](https://raw.githubusercontent.com/mutating/getsources/develop/docs/assets/logo_1.svg)
 
-
-This library is needed to obtain the source code of functions at runtime. It can be used, for example, as a basis for libraries that work with [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) on the fly. In fact, it is a thin layer built around [`inspect.getsource`](https://docs.python.org/3/library/inspect.html#inspect.getsource) and [`dill.source.getsource`](https://dill.readthedocs.io/en/latest/dill.html#dill.source.getsource).
+This library lets you retrieve a function's source code at runtime. It can serve as a foundation for tools that work with [ASTs](https://en.wikipedia.org/wiki/Abstract_syntax_tree). It is a thin wrapper around [`inspect.getsource`](https://docs.python.org/3/library/inspect.html#inspect.getsource) and [`dill.source.getsource`](https://dill.readthedocs.io/en/latest/dill.html#dill.source.getsource).
 
 
 ## Table of contents
 
 - [**Installation**](#installation)
-- [**Get dirty sources**](#get-dirty-sources)
-- [**Get clear sources**](#get-clear-sources)
-- [**Get hashes**](#get-hashes)
+- [**Get raw source**](#get-raw-source)
+- [**Get cleaned source**](#get-cleaned-source)
+- [**Generate source hashes**](#generate-source-hashes)
 
 
 ## Installation
 
-You can install [`getsources`](https://pypi.python.org/pypi/getsources) using pip:
+You can install [`getsources`](https://pypi.python.org/pypi/getsources) with pip:
 
 ```bash
 pip install getsources
 ```
+You can also use [`instld`](https://github.com/pomponchik/instld) to quickly try this package and others without installing them.
 
-You can also quickly try this package and others without installing them via [instld](https://github.com/pomponchik/instld).
 
+## Get raw source
 
-## Get dirty sources
+The standard library provides the [`getsource`](https://docs.python.org/3/library/inspect.html#inspect.getsource) function that returns the source code of functions and other objects. However, this does not work with functions defined in the [`REPL`](https://docs.python.org/3/tutorial/interpreter.html#interactive-mode).
 
-The standard library includes the [`getsource`](https://docs.python.org/3/library/inspect.html#inspect.getsource) function that returns the source code of functions and other objects. However, this does not work with functions defined in the [`REPL`](https://docs.python.org/3/tutorial/interpreter.html#interactive-mode).
-
-This library defines a function of the same name that does the same thing but does not have this drawback:
+This library provides a function with the same name and nearly the same interface, but without this limitation:
 
 ```python
 # You can run this code snippet in the REPL.
@@ -58,14 +56,14 @@ print(getsource(function))
 #>     ...
 ```
 
-This way, you can ensure that your functions that work with ASTs can be executed in any way. All other functions in this library are built on top of this one.
+This makes AST-based tools work reliably in both scripts and the REPL. All other functions in the library are built on top of it.
 
 
-## Get clear sources
+## Get cleaned source
 
-The [`getsource`](#get-dirty-sources) function returns the source code of functions in a "raw" format. This means that the code snippet captures some unnecessary surrounding code.
+The [`getsource`](#get-raw-source) function a function's source code in raw form. This means that the code snippet captures some unnecessary surrounding code.
 
-Here's an example where the standard `getsources` function gets rid extra whitespace characters:
+Here is an example where the standard `getsource` output includes extra leading whitespace:
 
 ```python
 if True:
@@ -77,16 +75,16 @@ print(getsource(function))
 #>         ...
 ```
 
-See? There are extra spaces at the beginning.
+> ↑ Notice the extra leading spaces.
 
-Lambda functions also capture the entire surrounding string:
+For lambda functions, it may also return the entire surrounding expression:
 
 ```python
 print(getsource(lambda x: x))
 #> print(getsource(lambda x: x))
 ```
 
-To address these issues, there is a special function called `getclearsource`, which returns the original function's code but stripped of any unnecessary elements:
+To address these issues, the library provides a function called `getclearsource`, which returns the function's source with unnecessary context removed:
 
 ```python
 from getsources import getclearsource
@@ -104,12 +102,12 @@ print(getclearsource(lambda x: x))
 #> lambda x: x
 ```
 
-When working with AST, this function is the recommended and safe way to retrieve the source code of functions.
+When working with ASTs, this is the recommended way to retrieve a function's source code.
 
 
-## Get hashes
+## Generate source hashes
 
-In some cases, you may not care what exactly is inside a function, but you need to distinguish between functions with different contents. In this case, the `getsourcehash` function is useful, as it returns a short string representation of the function’s source code hash:
+In some cases, you may not care about a function's exact source, but you still need to distinguish between different implementations. In this case, the `getsourcehash` function is useful. It returns a short hash string derived from the function's source code:
 
 ```python
 from getsources import getsourcehash
@@ -121,11 +119,11 @@ print(getsourcehash(function))
 #> 7SWJGZ
 ```
 
-> ⓘ A hash string contains only characters from the [`Crockford Base32`](https://en.wikipedia.org/wiki/Base32) alphabet, which consists solely of uppercase English letters and digits; letters that resemble digits are excluded from the list, making the hash easy to read.
+> ⓘ A hash string uses only characters from the [`Crockford Base32`](https://en.wikipedia.org/wiki/Base32) alphabet, which consists solely of uppercase English letters and digits; ambiguous characters are excluded, which makes the hash easier to read.
 
-> ⓘ The `getsourcehash` function operates on top of [`getclearsource`](#get-clear-sources) and ignores "extra" characters in the source code.
+> ⓘ The `getsourcehash` function is built on top of [`getclearsource`](#get-cleaned-source) and ignores "extra" characters in the source code.
 
-By default, the hash string length is 6 characters, but you can set your own values ranging from 4 to 8 characters:
+By default, the hash string length is 6 characters, but you can choose a length from 4 to 8 characters:
 
 ```python
 print(getsourcehash(function, size=4))
@@ -134,7 +132,7 @@ print(getsourcehash(function, size=8))
 #> XG7SWJGZ
 ```
 
-By default, the full text representation of a function is used, including its name and arguments. However, in some cases, we need to compare only the contents of the functions while ignoring these details; in such cases, we need to pass the argument `only_body=True`:
+By default, the full source code of a function is used, including its name and arguments. If you only want to compare function bodies, pass `only_body=True`:
 
 ```python
 def function_1():
