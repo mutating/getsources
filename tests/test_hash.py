@@ -90,7 +90,7 @@ def test_only_body_off(transformed):
         return 1234
 
     @transformed
-    def function2(a=5):
+    def function2(a=5):  # noqa: ARG001
         return 1234
 
     @transformed
@@ -107,7 +107,7 @@ def test_only_body_on(transformed):
         return 1234
 
     @transformed
-    def function2(a=5):
+    def function2(a=5):  # noqa: ARG001
         return 1234
 
     @transformed
@@ -124,7 +124,7 @@ def test_only_body_on_and_skip_docstring_off(transformed):
         return 1234
 
     @transformed
-    def function2(a=5):
+    def function2(a=5):  # noqa: ARG001
         return 1234
 
     @transformed
@@ -133,7 +133,7 @@ def test_only_body_on_and_skip_docstring_off(transformed):
         return 1234
 
     @transformed
-    def function4(a=5):
+    def function4(a=5):  # noqa: ARG001
         """kek"""
         return 1234
 
@@ -149,7 +149,7 @@ def test_only_body_on_and_skip_docstring_on(transformed):
         return 1234
 
     @transformed
-    def function2(a=5):
+    def function2(a=5):  # noqa: ARG001
         return 1234
 
     @transformed
@@ -158,7 +158,7 @@ def test_only_body_on_and_skip_docstring_on(transformed):
         return 1234
 
     @transformed
-    def function4(a=5):
+    def function4(a=5):  # noqa: ARG001
         """kek"""
         return 1234
 
@@ -182,12 +182,12 @@ def test_try_to_skip_doctstring_if_only_body_option_isnt_sen(transformed):
 
 def test_hash_simple_lambda():
     lambda_hash = getsourcehash(lambda x: x)
-    assert lambda_hash == '14FXP9'
+    assert lambda_hash == 'HVND1V'
 
 
 def test_hash_lambda_only_body():
     first_hash = getsourcehash(lambda x: x, only_body=True)
-    second_hash = getsourcehash(lambda x, y: x, only_body=True)
+    second_hash = getsourcehash(lambda x, y: x, only_body=True)  # noqa: ARG005
 
     assert first_hash == '91MJ41'
     assert first_hash == second_hash
