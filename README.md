@@ -56,7 +56,7 @@ print(getsource(function))
 #>     ...
 ```
 
-This makes AST-based tools work reliably in both scripts and the REPL. All other functions in the library are built on top of it.
+This allows AST-based tools to work reliably in both scripts and the `REPL`. All other functions in the library are built on top of it.
 
 
 ## Get cleaned source
