@@ -20,7 +20,7 @@ def get_body_text(function: Callable[..., Any], source: str, skip_docstring: boo
 
     else:
         function_node = tree.body[0]
-        body_nodes = function_node.body
+        body_nodes = function_node.body  # type: ignore[attr-defined]
         first = body_nodes[0]
 
         if skip_docstring and body_nodes and (isinstance(first, Expr) and isinstance(first.value, Constant) and isinstance(first.value.value, str)):
