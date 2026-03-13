@@ -104,7 +104,7 @@ print(getclearsource(lambda x: x))
 #> lambda x: x
 ```
 
-To extract only the substring containing a lambda function, the library uses AST parsing behind the scenes. Unfortunately, this does not allow it to distinguish between multiple lambda functions defined in a single line, so in this case you will get an exception:
+To extract only the substring containing a lambda function, the library uses AST parsing behind the scenes. Unfortunately, this [does not allow](https://stackoverflow.com/a/55386046/14522393) it to distinguish between multiple lambda functions defined in a single line, so in this case you will get an exception:
 
 ```python
 lambdas = [lambda: None, lambda x: x]
