@@ -1,15 +1,11 @@
 import hashlib
 from typing import Any, Callable
 from ast import parse, Expr, Constant, Lambda, get_source_segment, walk
-from types import FunctionType
 
 from getsources import getclearsource
+from getsources.helpers.is_lambda import is_lambda
 
 ALPHABET = '0123456789ABCDEFGHJKMNPQRSTVWXYZ'
-
-
-def is_lambda(function: Callable[..., Any]):
-    return isinstance(function, FunctionType) and function.__name__ == "<lambda>"
 
 
 def get_body_text(function: Callable[..., Any], source: str, skip_docstring: bool) -> str:
