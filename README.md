@@ -21,6 +21,13 @@
 This library is needed to obtain the source code of functions at runtime. It can be used, for example, as a basis for libraries that work with [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) on the fly. In fact, it is a thin layer built around [`inspect.getsource`](https://docs.python.org/3/library/inspect.html#inspect.getsource) and [`dill.source.getsource`](https://dill.readthedocs.io/en/latest/dill.html#dill.source.getsource).
 
 
+## Table of contents
+
+- [**Installation**](#installation)
+- [**Get dirty sources**](#get-dirty-sources)
+- [**Get clear sources**](#get-clear-sources)
+- [**Get hashes**](#get-hashes)
+
 ## Installation
 
 You can install [`getsources`](https://pypi.python.org/pypi/getsources) using pip:
@@ -29,10 +36,10 @@ You can install [`getsources`](https://pypi.python.org/pypi/getsources) using pi
 pip install getsources
 ```
 
-You can also quickly try out this and other packages without having to install using [instld](https://github.com/pomponchik/instld).
+You can also quickly try this package and others without installing them via [instld](https://github.com/pomponchik/instld).
 
 
-## Usage
+## Get dirty sources
 
 The basic function of the library is `getsource`, which works similarly to the function of the same name from the standard library:
 
@@ -50,7 +57,10 @@ print(getsource(function))
 Unlike its counterpart from the standard library, this thing can also work:
 
 - With lambda functions (however, keep in mind that the entire text of the line where they are defined is returned, and if there are multiple lambda functions there, the library won't let you distinguish between them)
-- With functions defined inside REPL
+- With functions defined inside `REPL`
+
+
+## Get clear sources
 
 We also often need to trim excess indentation from a function object to make it easier to further process the resulting code. To do this, use the `getclearsource` function:
 
@@ -68,7 +78,10 @@ print(getclearsource(SomeClass.method))
 #>     ...
 ```
 
-As you can see, the resulting source code text has no extra indentation, but in all other respects this function is completely identical to the usual `getsource`.
+As you can see, the resulting source code text has no extra indentation, but in all other respects this function is completely identical to the [usual `getsource`](#get-dirty-sources).
+
+
+## Get hashes
 
 In some cases, you may not care what exactly is inside a function, but you need to distinguish between functions with different contents. In this case, the `getsourcehash` function is useful, as it returns a short string representation of the function’s source code hash:
 
