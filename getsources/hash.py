@@ -1,6 +1,6 @@
 import hashlib
+from ast import Constant, Expr, Lambda, get_source_segment, parse, walk
 from typing import Any, Callable
-from ast import parse, Expr, Constant, Lambda, get_source_segment, walk
 
 from getsources import getclearsource
 from getsources.helpers.is_lambda import is_lambda

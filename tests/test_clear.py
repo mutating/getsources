@@ -49,8 +49,8 @@ def test_usual_functions():
 def test_lambda():
     function = lambda x: x
 
-    assert getclearsource(function) == 'function = lambda x: x'
-    assert getclearsource(global_function_3) == 'global_function_3 = lambda x: x'
+    assert getclearsource(function) == 'lambda x: x'
+    assert getclearsource(global_function_3) == 'lambda x: x'
 
 
 def test_usual_methods():
@@ -171,4 +171,4 @@ def test_lambda_in_REPL():  # noqa: N802
 
     child.sendline("exit()")
 
-    assert any('function = lambda x: x' in x for x in after)
+    assert any('lambda x: x' in x for x in after)
