@@ -58,6 +58,8 @@ print(getsource(function))
 
 This allows AST-based tools to work reliably in both scripts and the `REPL`. All other functions in the library are built on top of it.
 
+However, please note that this library is intended solely for retrieving the source code of functions of any kind, including generators, async functions, regular functions, class methods, lambdas, and so on. It is not intended for classes, modules, or other objects. Other use cases may work, but they are not covered by the test suite.
+
 
 ## Get cleaned source
 
