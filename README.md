@@ -57,7 +57,7 @@ print(getsource(function))
 
 Unlike its counterpart from the standard library, this thing can also work:
 
-- With lambda functions (however, keep in mind that the entire text of the line where they are defined is returned, and if there are multiple lambda functions there, the library won't let you distinguish between them)
+- With lambda functions
 - With functions defined inside `REPL`
 
 
