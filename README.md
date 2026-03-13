@@ -102,7 +102,26 @@ print(getclearsource(lambda x: x))
 #> lambda x: x
 ```
 
-When working with ASTs, this is the recommended way to retrieve a function's source code.
+To extract only the substring containing a lambda function, the library uses AST parsing behind the scenes. Unfortunately, this does not allow it to distinguish between multiple lambda functions defined in a single line, so in this case you will get an exception:
+
+```python
+lambdas = [lambda: None, lambda x: x]
+
+getclearsource(lambdas[0])
+#> ...
+#> getsources.errors.UncertaintyWithLambdasError: Several lambda functions are defined in a single line of code, can't pick the one.
+```
+
+If you absolutely must obtain at least some source code for these lambdas, use [`getsource`](#get-raw-source):
+
+```python
+try:
+    getclearsource(function)
+except UncertaintyWithLambdasError:
+    getsource(function)
+```
+
+However, in general, the `getclearsource` function is recommended for retrieving the source code of functions when working with the AST.
 
 
 ## Generate source hashes
