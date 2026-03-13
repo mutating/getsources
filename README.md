@@ -49,7 +49,7 @@ print(getsource(function))
 
 Unlike its counterpart from the standard library, this thing can also work:
 
-- With lambda functions
+- With lambda functions (however, keep in mind that the entire text of the line where they are defined is returned, and if there are multiple lambda functions there, the library won't let you distinguish between them)
 - With functions defined inside REPL
 
 We also often need to trim excess indentation from a function object to make it easier to further process the resulting code. To do this, use the `getclearsource` function:
