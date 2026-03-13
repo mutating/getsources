@@ -26,7 +26,7 @@ def get_body_text(function: Callable[..., Any], source: str, skip_docstring: boo
         if skip_docstring and body_nodes and (isinstance(first, Expr) and isinstance(first.value, Constant) and isinstance(first.value.value, str)):
             body_nodes = body_nodes[1:]
 
-    return '\n'.join([get_source_segment(source, statement) for statement in body_nodes])
+    return '\n'.join([get_source_segment(source, statement) for statement in body_nodes])  # type: ignore[misc]
 
 
 def getsourcehash(function: Callable[..., Any], size: int = 6, only_body: bool = False, skip_docstring: bool = False) -> str:
